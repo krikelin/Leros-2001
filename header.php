@@ -3,6 +3,9 @@ require_once 'models.php';
 if(!user_is_logged_in()) {
 	header('location: login.php');
 }
+function __($str) {
+	return $str;
+}
 ?>
 <html>
 	<head>

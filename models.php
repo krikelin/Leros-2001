@@ -8,10 +8,11 @@ define('SECURITY_TOKEN', '1251512asf');
 * //TIMEWARP
  **********************************/
 
+
 class Model {
-	var $conn;
+	var $_conn;
 	var $_id;
-	var $fields = array("id");
+	var $_fields = array("id");
 	var $_dbtable = "[model]";
 	var $_row;
 	function __construct($id = NULL) {
@@ -40,30 +41,36 @@ class Model {
 	function create($id = NULL) {
 		$this->__construct($id);
 	}
-	function select($fields = "*", $conditions = array()) {
+	function select($fields = "*", $conditions = array(), $order = NULL) {
 		$sql = "SELECT " . (is_array($fields) ? implode(',', $fields) : $fields) . " FROM " .$this->_dbtable . " WHERE ";
 		$conds = array();
 		foreach($conditions as $k => $v) {
 			$conds[] = $k . " = '" . mysql_real_escape_string($v) . "'";
 		}
 		$sql .= implode(' AND ', $conds);
+		if(strlen($order) > 0) {
+			$sql .= "ORDER BY ";
+			$sql .= $order;
+		}
 		$result = mysql_query($sql) or die(mysql_error()); 
 		return $result;
 	}
 	function insert($values) {
-		$sql = "INSERT INTO " . $this->_dbtable . " (".implode(',', ($this->fields)).") VALUES (";
+		$fields = array_keys($values);
+		$sql = "INSERT INTO " . $this->_dbtable . " (".implode(',', ($fields)).") VALUES (";
 		$vals = array();
+		
 		// die(var_dump($values));
 		foreach($values as $k => $v) {
 			var_dump($values);
 
 			$val = '2';
-
+	
 			if(gettype($val) == 'string') {
 				$val = "'". mysql_real_escape_string($v). "'";
 			}
 
-			if(gettype($val) == 'int') {
+			if(is_numeric($val)) {
 				$val = $v;
 			}
 
@@ -94,14 +101,21 @@ class Model {
 	}
 	function save($t = TRUE) {
 		$fields = array();
-		foreach (array_keys(get_class_vars(get_class($this))) as $var) {
+		$vars = get_class_vars(get_class($this));
+		foreach (array_keys($vars) as $var) {
 			
 			if(strrpos('_', $var) !== 0) {
-				$fields[$var] = $this->{$var};
-			}
-			$val = $this->{$var};
-			if(is_object($val)) {	
-				$fields[$var] = $val->_id;
+				if(is_string($this->{$var}))
+					$fields[$var] = $this->{$var};
+				if(is_numeric($this->{$var})) {
+					
+					$fields[$var] = $this->{$var};
+				}
+				$val = $this->{$var};
+				if(is_object($val)) {	
+					
+					$fields[$var.'_id'] = $val->_id;
+				}
 			}
 		}
 		$this->insert($fields);
@@ -135,7 +149,7 @@ class User  extends Model {
 	var $username;
 	var $password;
 	var $_dbtable = "users";
-	var $fields = array('username', 'email', 'password');
+	var $_fields = array('username', 'email', 'password');
 	function __construct($id = NULL) {
 		parent::__construct($id);
 		
@@ -156,13 +170,26 @@ class User  extends Model {
 function user_is_logged_in() {
 	return isset($_COOKIE['user_id']);
 }
+class Sport extends Model {
+	var $_id;
+	var $title;
+	function __construct($id = NULL) {
+		parent::construct($id);
+	}
+	function create($id = NULL) {
+		this->__construct($id);
+	}
+}	
 class Swim  extends Model {
 	var $_id;
 	var $metres;
 	var $time;
-	var $user_id;
+	var $user;
+	var $user;
+	
+	var $duration;
 	var $_dbtable = "swims";
-	var $fields = array('metres', 'time', 'user_id');
+	var $_fields = array('metres', 'duration', 'time', 'user');
 	function __construct($id = NULL) {
 
 		parent::__construct($id);
@@ -179,15 +206,22 @@ class Collection {
 		
 	}
 
-	function query($fields, $conditions = array()) {
+	function query($fields, $conditions = array(), $order = NULL) {
 		$instance = new $this->_model();
 		$sql = "SELECT _id FROM " . $instance->_dbtable . " WHERE ";
 		foreach($conditions as $k => $v) {
 			$conds[] = $k . " = '" . mysql_real_escape_string($v) . "'";
 		}
+		
 		$sql .= implode(' AND ', $conds);
+		if(strlen($order) > 0) {
+			var_dump($order);
+			$sql .= " ORDER BY ";
+			$sql .= $order;
+		}
 		$result = mysql_query($sql);
-		$rows = array();	
+		$rows = array();
+		
 		while($row = mysql_fetch_array($result)) {
 			// var_dump($row);
 			$swim = new $this->_model($row['_id']);
@@ -195,6 +229,7 @@ class Collection {
 			$rows[] = $swim;
 			// var_dump($rows);
 		}
+		
 		return $rows;
 	}
 }// var_dump
