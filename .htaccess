@@ -1,0 +1,5 @@
+<IfModule mod_rewrite.so>
+RewriteBase /
+RewriteRule ^([a-zA-Z]+) /swims/index.php?sport=$1 [L]
+RewriteRule ^([a-zA-Z]+) /swims/view.php [L]
+</IfModule>

@@ -15,7 +15,7 @@ if(isset($_POST['time'])) {
 }
 
 $duration = ((((int)$_POST['minutes']) * 60) + ((int)$_POST['seconds']));
-
+	
 $distance = $_POST['distance'];
 
 if(!user_is_logged_in()) {

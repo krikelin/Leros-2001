@@ -1,7 +1,7 @@
  <?php
 require_once '../header.php';
 $swimCollection = new Collection("Swim");
-$laps = $swimCollection->query("*", array('user_id' => $_COOKIE['user_id']), ' `time` DESC');
+$laps = $swimCollection->query("*", array('user_id' => $_COOKIE['user_id'], 'sport_id' => '1'), ' `time` DESC');
 ?>
 <form method="POST" action="index-post.php">
 <table cellpadding="4">
