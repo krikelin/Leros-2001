@@ -9,7 +9,7 @@ $laps = $swimCollection->query("*", array('user_id' => $_COOKIE['user_id']), ' `
 		<td colspan="5" bgcolor="#eeeeee">
 			[<a href="add.php"><?php echo __('Add session')?></a>]
 			With selected: 
-			<!--<button type="submit" name="action" value="delete">Delete</button>-->
+			<button type="submit" name="action" value="delete">Delete</button>
 
 		</td>
 	</caption>
@@ -26,7 +26,7 @@ $laps = $swimCollection->query("*", array('user_id' => $_COOKIE['user_id']), ' `
 			<td><input type="checkbox" name="item-<?php echo $lap->_id?>" /></td>
 			<td align="right"><a href="view.php?id=<?php echo $lap->_id?>"><?php echo $lap->time?></a></td>
 			<td align="right"><?php echo $lap->metres?></td>
-			<td align="right"><?php echo $lap->duration?></td>
+			<td align="right"><?php echo round($lap->duration / 60)?>:<?php echo round($lap->duration % 60)?></td>
 			<td align="right"><?php echo @round($lap->metres / $lap->duration, 2)?></td>
 		</tr>
 		<?php endforeach;?>

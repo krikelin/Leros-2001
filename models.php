@@ -88,11 +88,12 @@ class Model {
 	}
 	function update($id, $values) {
 		$sql = "UPDATE " . $this->_dbtable . " SET ";
+		$conds = array();
 		foreach($values as $k => $v) {
-			$sql .= $k . " = '" . mysql_real_escape_string($v) . "'";
+			$conds[] = $k . " = '" . mysql_real_escape_string($v) . "' ";
 		}
-		$sql .= "WHERE id = ". mysql_real_escape_string($id);
-		$q = mysql_query($sql) or die(mysql_error());
+		$sql .= implode(',', $conds) . " WHERE _id = ". mysql_real_escape_string($id);
+		$q = mysql_query($sql) or die(mysql_error(). " " . $sql);
 		$result = mysql_result($q);
 	}
 	function delete($id) {
@@ -105,6 +106,7 @@ class Model {
 		foreach (array_keys($vars) as $var) {
 			
 			if(strrpos('_', $var) !== 0) {
+				
 				if(is_string($this->{$var}))
 					$fields[$var] = $this->{$var};
 				if(is_numeric($this->{$var})) {
@@ -118,6 +120,10 @@ class Model {
 				}
 			}
 		}
+		if($this->_id > 0) 
+			$this->update($this->_id, $fields);
+			
+		else
 		$this->insert($fields);
 	}
 }
