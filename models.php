@@ -177,7 +177,7 @@ class Sport extends Model {
 		parent::construct($id);
 	}
 	function create($id = NULL) {
-		this->__construct($id);
+		$this->__construct($id);
 	}
 }	
 class Swim  extends Model {
