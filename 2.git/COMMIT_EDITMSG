@@ -1,0 +1,28 @@
+First commit
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Author:    Alexander Forselius <drsounds@gmail.com>
+#
+# x-Author:    unknown <Administratör@standard-sutsw8.(none)>
+#
+# On branch master
+#
+# Initial commit
+#
+# Changes to be committed:
+#   (use "git rm --cached <file>..." to unstage)
+#
+#	new file:   conn.php
+#	new file:   header.php
+#	new file:   index.php
+#	new file:   login-do.php
+#	new file:   login.php
+#	new file:   models
+#	new file:   models.php
+#	new file:   swims.php
+#	new file:   swims/add-do.php
+#	new file:   swims/add.php
+#	new file:   swims/index.php
+#
